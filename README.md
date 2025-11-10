@@ -556,7 +556,7 @@ def capture_image_and_close(window, cap):
 
 <li>Closes the Tkinter window.</li>
 
-<li>Calls afiseaza_date_vizitator(guest) to display visitor data.</li><ul>
+<li>Calls afiseaza_date_vizitator(guest) to display visitor data.</li></ul>
 </ul>
 
 This function ties together live <b>camera capture, image processing, visitor data extraction, and RFID card handling.</b>
