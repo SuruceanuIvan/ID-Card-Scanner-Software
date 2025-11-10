@@ -276,4 +276,102 @@ class DateTime:
         return self._template
 ```
 
+The <b>DateTime</b> class is inherited by other classes, such as DBHandler, to provide consistent timestamp generation across different system operations. This ensures that database records, logs, and other time-dependent functions are synchronized and formatted uniformly.
+
+<hr />
+
+```python
+class DBHandler:
+    DB_NAME = "project.db"
+
+    def __init__(self):
+        '''
+            – establishes a connection to the SQLite database (project.db)
+            and initializes a cursor for executing SQL queries.
+        '''
+        self._con = sql3.connect(DBHandler.DB_NAME)
+
+        self._cursor = self.getConnection().cursor()
+
+    def verifyExistentGuest(self, serie_numar):
+        '''
+            – checks whether a guest with a specific ID card series and number exists in the vizitator table.
+            Returns the guest ID if found, otherwise returns False
+        '''
+        ver = self.getCursor().execute(f"SELECT * FROM vizitator WHERE seria='{serie_numar[0]}' AND numar='{serie_numar[1]}'")
+
+        rezultat = ver.fetchall()
+
+        if len(list(rezultat)):
+            return list(rezultat)[0][0]
+        else:
+            return False
+    
+    def scanGuest(self, guest : Guest):
+        '''
+            – adds a new guest to the database if they do not already exist.
+            Returns a Guest object updated with the database ID.
+        '''
+        guest_data = guest.getProps()
+
+        if self.verifyExistentGuest((guest_data[3], guest_data[4])) == False:
+            self.getCursor().execute("INSERT INTO vizitator (nume, prenume, seria, numar, poza) VALUES(?, ?, ?, ?, ?)", guest_data[1:])
+
+            self.getConnection().commit()
+
+            guest = Guest(*guest_data[1:-1], self.verifyExistentGuest((guest_data[3], guest_data[4])), guest_data[-1])
+        else:
+            guest = Guest(*guest_data[1:-1], self.verifyExistentGuest((guest_data[3], guest_data[4])), guest_data[-1])
+
+        return guest
+    
+    def giveCard(self, guest, code, nr_camera):
+        '''
+            – logs the assignment of a unique guest card (RFID) and records the room number and entry time in the database.
+        '''
+        data_time = DateTime()
+
+        timp = data_time.getStamp()
+
+        self.getCursor().execute("INSERT INTO vizitator_timp (vizitator_id, numar_camerei, time_in) VALUES(?, ?, ?)", (guest.getID(), nr_camera, timp))
+        self.getConnection().commit()
+
+        self.getCursor().execute("INSERT INTO vizitator_card (vizitator_id, card_key, time_in) VALUES(?, ?, ?)", (guest.getID(), code, timp))
+        self.getConnection().commit()
+    
+    def takeCard(self, code):
+        '''
+            – logs the exit time for a guest when the card is returned and deletes the corresponding entry in vizitator_card.
+        '''
+        data_time = DateTime()
+
+        self.getCursor().execute(f"""UPDATE vizitator_timp
+                SET time_out = '{data_time.getStamp()}'
+                WHERE vizitator_id = (
+                    SELECT vizitator_id FROM vizitator_card
+                    WHERE card_key = '{code}'
+                    ORDER BY time_in DESC
+                    LIMIT 1
+                ) AND time_in=(SELECT time_in FROM vizitator_card WHERE card_key='{code}' ORDER BY time_in DESC LIMIT 1)""")
+        self.getConnection().commit()
+
+        self.getCursor().execute(f"DELETE FROM vizitator_card WHERE card_key='{code}'")
+        self.getConnection().commit()
+
+    def getConnection(self):
+        return self._con
+    
+    def getCursor(self):
+        return self._cursor
+
+```
+
+The <b>DBHandler class</b> implements the <b>data access layer</b>, handling all interactions between the application and the database.
+
+It <b>aggregates</b> Guest objects to manipulate their data in the database.
+
+It <b>inherits</b> DateTime functionality indirectly by creating DateTime objects to log entry and exit times consistently.
+
+The class ensures that database operations are <b>encapsulated</b>, making the system more maintainable and reducing the risk of SQL-related errors.
+
 # Thanks!
