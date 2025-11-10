@@ -564,4 +564,14 @@ It demonstrates the integration of GUI, hardware, and software modules to form a
 
 <hr />
 
+![nr_camerei](https://github.com/user-attachments/assets/8f5563d8-79da-416d-b1a3-5566caeebcf1)
+![imagine_a_fost_salvata](https://github.com/user-attachments/assets/56879bd4-2f35-4012-8b6e-e6e529568848)
+![verificare_date](https://github.com/user-attachments/assets/fe1ff4c4-012a-4c21-aadc-1803ca5c79c7)
+
+
+![WhatsApp Image 2025-11-08 at 01 20 09_b337fae1](https://github.com/user-attachments/assets/d2b0da7c-2bda-448b-9332-b0679ef462e6)
+![WhatsApp Image 2025-11-08 at 01 20 13_9cd3b043](https://github.com/user-attachments/assets/f5f9d4d6-a206-410f-b124-ca079185d4ab)
+![WhatsApp Image 2025-11-08 at 01 20 19_c8b3884b](https://github.com/user-attachments/assets/914b3db8-e580-4b86-a03d-f644dc4c9769)
+
+
 # Thanks!
