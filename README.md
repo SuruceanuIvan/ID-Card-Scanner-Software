@@ -376,6 +376,8 @@ It <b>inherits</b> DateTime functionality indirectly by creating DateTime object
 
 The class ensures that database operations are <b>encapsulated</b>, making the system more maintainable and reducing the risk of SQL-related errors.
 
+<hr />
+
 ### start_live_feed()
 
 ```python
@@ -463,5 +465,103 @@ def start_live_feed():
 
 This function provides a <b>user-friendly interface</b> for live camera monitoring and image capture, forming the basis for ID card scanning.
 It <b>bridges the hardware</b> (camera and sensors) and the software processing modules (Imagine / ImagineTools) by supplying image data for further analysis.
+
+<hr />
+
+### capture_
+
+```python
+def capture_image_and_close(window, cap):
+    global nr_camerei
+
+    image_path = f"buletin_{strftime('%Y%m%d_%H%M%S')}.jpg"
+    
+    ret, frame = cap.read()
+    if ret:
+        cv2.imwrite(image_path, frame)
+        messagebox.showinfo("Imagine Capturată", f"Imaginea a fost salvată!\nLuați un card și plasati-l pe cititorul de card.")
+    
+    nr_card = card.obtainUID()
+
+    img = bck.Imagine("buletin_scanat.jpg")
+    img_tools = bck.ImagineTools(img.getCV2Image())
+    img_tools.blackAndWhite()
+
+    guest = bck.Guest(
+        img_tools.getNames()[0],
+        "-".join(img_tools.getNames()[1:]),
+        img_tools.getSeriaNumar()[0],
+        img_tools.getSeriaNumar()[1],
+        0,
+        "buletin_scanat.jpg"
+    )
+    print(guest.getProps())
+
+    vizitator = guest
+    card_cheie = nr_card
+
+    # Database operations (commented out in this snippet)
+    # db = bck.DBHandler()
+    # guest = db.scanGuest(guest)
+    # db.giveCard(guest, nr_card, nr_camerei)
+
+    messagebox.showinfo("Card Info", f"Cardul cu nr. {nr_card} a fost asociat cu succes!.")
+
+    cap.release()
+    window.destroy()
+
+    afiseaza_date_vizitator(guest)
+```
+
+<b>Description of Functionality:</b>
+
+<ul>
+<li>Capture and Save Image:</li>
+
+<ul><li>Reads a frame from the camera feed.</li>
+
+<li>Saves the image with a timestamp-based filename for traceability.</li>
+
+<li>Notifies the user that the image has been saved.</li></ul>
+
+<li>Read RFID Card:</li>
+
+<ul><li>Retrieves the unique card ID from the card reader.</li></ul>
+
+<li>Process Captured Image:</li>
+
+<ul><li>Initializes the Imagine and ImagineTools classes to process the image.</li>
+
+<li>Converts the image to black-and-white for better OCR results.</li>
+
+<li>Extracts visitor names and ID card series/number.</li></ul>
+
+<li>Create Guest Object:</li>
+
+<ul><li>Constructs a Guest object with the extracted information.</li>
+
+<li>Prints guest properties for verification.</li></ul>
+
+<li>Database Interaction (Optional / Commented Out):</li>
+
+<ul><li>Example code shows how the guest and card could be stored in the database using DBHandler.</li></ul>
+
+<li>User Feedback:</li>
+
+<ul><li>Displays confirmation messages for image capture and card association.</li></ul>
+
+<li>Cleanup:</li>
+
+<ul><li>Releases the camera resource.</li>
+
+<li>Closes the Tkinter window.</li>
+
+<li>Calls afiseaza_date_vizitator(guest) to display visitor data.</li><ul>
+</ul>
+
+This function ties together live <b>camera capture, image processing, visitor data extraction, and RFID card handling.</b>
+It demonstrates the integration of GUI, hardware, and software modules to form a complete visitor identification workflow.
+
+<hr />
 
 # Thanks!
