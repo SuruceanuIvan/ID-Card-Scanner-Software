@@ -516,7 +516,7 @@ def capture_image_and_close(window, cap):
 <b>Description of Functionality:</b>
 
 <ul>
-<li>Capture and Save Image:</li>
+<li><b>Capture and Save Image:</b></li>
 
 <ul><li>Reads a frame from the camera feed.</li>
 
@@ -524,11 +524,11 @@ def capture_image_and_close(window, cap):
 
 <li>Notifies the user that the image has been saved.</li></ul>
 
-<li>Read RFID Card:</li>
+<li><b>Read RFID Card:</b></li>
 
 <ul><li>Retrieves the unique card ID from the card reader.</li></ul>
 
-<li>Process Captured Image:</li>
+<li><b>Process Captured Image:</b></li>
 
 <ul><li>Initializes the Imagine and ImagineTools classes to process the image.</li>
 
@@ -536,21 +536,21 @@ def capture_image_and_close(window, cap):
 
 <li>Extracts visitor names and ID card series/number.</li></ul>
 
-<li>Create Guest Object:</li>
+<li><b>Create Guest Object:</b></li>
 
 <ul><li>Constructs a Guest object with the extracted information.</li>
 
 <li>Prints guest properties for verification.</li></ul>
 
-<li>Database Interaction (Optional / Commented Out):</li>
+<li><b>Database Interaction (Optional / Commented Out):</b></li>
 
 <ul><li>Example code shows how the guest and card could be stored in the database using DBHandler.</li></ul>
 
-<li>User Feedback:</li>
+<li><b>User Feedback:</b></li>
 
 <ul><li>Displays confirmation messages for image capture and card association.</li></ul>
 
-<li>Cleanup:</li>
+<li><b>Cleanup:</b></li>
 
 <ul><li>Releases the camera resource.</li>
 
