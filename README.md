@@ -280,6 +280,8 @@ The <b>DateTime</b> class is inherited by other classes, such as DBHandler, to p
 
 <hr />
 
+### DBHandler
+
 ```python
 class DBHandler:
     DB_NAME = "project.db"
@@ -373,5 +375,93 @@ It <b>aggregates</b> Guest objects to manipulate their data in the database.
 It <b>inherits</b> DateTime functionality indirectly by creating DateTime objects to log entry and exit times consistently.
 
 The class ensures that database operations are <b>encapsulated</b>, making the system more maintainable and reducing the risk of SQL-related errors.
+
+### start_live_feed()
+
+```python
+def start_live_feed():
+    global w
+    
+    cap = cv2.VideoCapture(0)  # Open default camera
+
+    # Set resolution
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+
+    window = tk.Toplevel(w)
+    window.title("Feed Live de la Cameră")
+
+    window_width = 750
+    window_height = 550
+    canvas = tk.Canvas(window, width=window_width, height=window_height)
+    canvas.pack()
+
+    def update_frame():
+        ret, frame = cap.read()
+        if ret:
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            image_pil = Image.fromarray(frame_rgb)
+            image_resized = image_pil.resize((window_width, window_height))
+            imgtk = ImageTk.PhotoImage(image=image_resized)
+            canvas.create_image(0, 0, anchor=tk.NW, image=imgtk)
+            canvas.imgtk = imgtk
+        
+        sensor.when_pressed = led.off
+        window.after(10, update_frame)
+
+    update_frame()
+
+    capture_button = tk.Button(
+        window,
+        text="Capturează Imagine",
+        command=lambda: capture_image_and_close(window, cap),
+        width=120,
+        height=100,
+        background="green"
+    )
+    capture_button.pack()
+
+    window.mainloop()
+```
+
+<b>Description of Functionality:</b>
+
+<ul>
+<li><b>Camera Initialization:</b></li>
+
+<ul><li>Opens the default camera (cv2.VideoCapture(0)) and sets the resolution to 1920×1080.</li></ul>
+
+<li><b>Tkinter Window Setup:</b></li>
+
+<ul><li>Creates a separate Toplevel window.</li>
+
+<li>A Canvas is used to display the live video feed.</li></ul>
+
+<li><b>Live Feed Update (update_frame):</b></li>
+
+<ul><li>Reads frames from the camera.</li>
+
+<li>Converts the image from BGR (OpenCV format) to RGB.</li>
+
+<li>Resizes the frame to fit the window dimensions.</li>
+
+<li>Displays the frame in the Tkinter canvas.</li>
+
+<li>Updates the feed every 10 milliseconds using window.after().</li></ul>
+
+<li><b>Capture Button</b>:</li>
+
+<ul><li>Adds a button to capture the current frame and close the feed.</li>
+
+<li>Calls capture_image_and_close(window, cap) when clicked.</li></ul>
+
+<li><b>GPIO Integration:</b></li>
+
+<ul><li>Example line sensor.when_pressed = led.off shows interaction with external hardware (like a sensor or LED), demonstrating that the GUI can integrate with physical components.</li></ul>
+
+</ul>
+
+This function provides a <b>user-friendly interface</b> for live camera monitoring and image capture, forming the basis for ID card scanning.
+It <b>bridges the hardware</b> (camera and sensors) and the software processing modules (Imagine / ImagineTools) by supplying image data for further analysis.
 
 # Thanks!
